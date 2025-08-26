@@ -1,0 +1,286 @@
+# Create your models here.
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from django.utils import timezone
+
+from core.commons.commons import STATUS, generate_code
+
+'''
+class UserStatus(TextChoices):
+    ACTIVE = "ACTIVE", _("Active")
+    PENDING = "PENDING", _("Pending")
+    INACTIVE = "INACTIVE", _("Inactive")
+    CANCELLED = "CANCELLED", _("Cancelled")
+'''
+
+STATUSUSER = {
+    ('ENABLE', 'Active'),
+    ('PENDING', 'En cours'),
+    ('CANCELLED', 'Supprimé'),
+    ('DISABLE', 'Disable'),
+    ('PENDING_KYC', 'Demande Kcy'),
+    ('VALID_KYC', 'Valider Kcy'),
+    ('REJECT_KYC', 'Rejeter Kyc'),
+}
+
+ROLE = {
+    ('ADMIN_SYSTEM', 'Super Admin'),
+    ('SUPERVISOR_SYSTEM', 'Superviseur System'),
+    ('TRESORIER_SYSTEM', 'Tresorier System'),
+    ('SUPPORT_SYSTEM', 'Support System'),
+    ('FOURNISSEUR', 'Fournisseur'),
+    ('ADMIN_PARTNER', 'Administrateur partenaire'),
+    ('CHEF_BOUTIQUE', 'Chef Boutique'),
+    ('SUPERVISOR', 'Superviseur'),
+    ('AGENT_CAISSE', 'Agent Caisse'),
+    ('AGENT_CONTROLE', 'Agent Controle'),
+    ('SUPPORT', 'Support'),
+    ('CUSTOMER_INVOICE', 'Client Boutique'),
+    ('CUSTOMER', 'Client'),
+}
+ROLE_FORM = {
+    ('ADMIN_MAGASIN', 'Administrateur Magasin'),
+    ('CHEF_BOUTIQUE', 'Chef Boutique'),
+    ('SUPERVISOR', 'Superviseur'),
+    ('AGENT_CAISSE', 'Agent Caisse'),
+    ('AGENT_CONTROLE', 'Agent Controle'),
+    ('SUPPORT', 'Support')
+}
+
+ROLE_FORM_PARTNER = {
+    'ADMIN_PARTNER': 'Administrateur partenaire',
+    'CHEF_BOUTIQUE': 'Chef Boutique',
+    'SUPERVISOR': 'Superviseur',
+    'AGENT_CAISSE': 'Agent Caisse'
+}
+ENUM_EMPTY = {}
+ROLE_FORM1 = [
+    ('ADMIN_MAGASIN', 'Administrateur Magasin'),
+    ('CHEF_BOUTIQUE', 'Chef Boutique'),
+    ('SUPERVISOR', 'Superviseur'),
+    ('AGENT_CAISSE', 'Agent Caisse'),
+    ('AGENT_CONTROLE', 'Agent Controle'),
+    ('SUPPORT', 'Support'),
+]
+
+FUNCTIONALITY = {
+    'DASHBOARD': 'Dashboard',
+    'CUSTOMERS': 'Compte Clients',
+    'ENTITIES': 'Entités',
+    'USERS': 'Utilisateurs',
+    'STOCKS': 'Stocks',
+    'SALES': 'Ventes',
+    'PURCHASES': 'Achats',
+    'MARKETING': 'Communications',
+    'SETTINGS': 'Parametrages',
+}
+
+ENTITYTYPE = {
+    'RACINE': 'Racine',
+    'FOURNISSEUR': 'Fournisseur',
+    'PARTNER': 'Partenaire',
+    'BOUTIQUE': 'Boutique',
+    'CAISSE': 'Caisse',
+}
+GENRE = {
+    'M': 'Masculin',
+    'F': 'Feminin',
+    'I': 'Inconnue'
+}
+
+STATUSSESSION = {
+    'OPEN': 'Ouverte',
+    'CLOSE': 'Fermée',
+}
+USERKYCDOCTYPE = {
+    'PASSPORT': 'Passeport',
+    'CNI': "Carte d Identité",
+}
+
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=50, default='')
+    phone = models.CharField(max_length=50, default="", blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, choices=STATUSUSER, default='ENABLE')
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    def __str__(self):
+        return f"{self.email}, {self.first_name} "
+
+    class Meta:
+        verbose_name_plural = "Users"
+
+
+class AuditFieldsModel(models.Model):
+    identity = models.CharField(max_length=100, default=generate_code(7), unique=True, editable=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(User, related_name="%(class)s_created_by", on_delete=models.SET_NULL,
+                                   null=True)
+    updated_by = models.ForeignKey(User, related_name="%(class)s_updated_by", on_delete=models.SET_NULL,
+                                   null=True)
+    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
+
+    class Meta:
+        abstract = True
+
+
+class Role(models.Model):
+    code = models.CharField(max_length=50, primary_key=True, choices=ROLE)
+    name = models.CharField(max_length=80)
+    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
+
+    @property
+    def menu_list(self):
+        return self.role_functionalities.filter(code__in=['HOME', 'ENTITIES', 'STOCKS'], status='ENABLE').order_by(
+            'orderby')
+
+    def __str__(self):
+        return f"{self.code}, {self.name} "
+
+    class Meta:
+        verbose_name_plural = "Roles"
+
+
+class Functionality(models.Model):
+    code = models.CharField(max_length=50, primary_key=True, choices=FUNCTIONALITY)
+    libelle = models.CharField(max_length=80, default='')
+    icon = models.CharField(max_length=80, default='')
+    url = models.CharField(max_length=80, default='')
+    parent = models.ForeignKey('self', related_name='functionalityParent', on_delete=models.SET_NULL, null=True)
+    roles = models.ManyToManyField(Role, related_name='role_functionalities')
+    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
+    orderby = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.code}, {self.libelle} , {self.parent} "
+
+    @property
+    def child_list(self):
+        # return self.objects.filter(parent__code=self.code).all()
+        return self.objects.all()
+
+    class Meta:
+        verbose_name_plural = "Functionalities"
+
+
+class Address(models.Model):
+    country = models.CharField(max_length=100, default="")
+    city = models.CharField(max_length=100, default="")
+    state = models.CharField(max_length=100, default="")
+    street = models.CharField(max_length=100, default="")
+
+    location = models.CharField(max_length=250, default="")
+
+    longitude = models.CharField(max_length=100, blank=True, default="")
+    latitude = models.CharField(max_length=100, blank=True, default="")
+
+    def __str__(self):
+        return f" {self.id}, {self.country}, {self.city} "
+
+    class Meta:
+        verbose_name_plural = "Address"
+
+
+class PartnerInfo(models.Model):
+    address = models.ForeignKey(Address, related_name='entity_address', on_delete=models.SET_NULL, null=True)
+    ninea = models.CharField(max_length=40, default='', blank=True)
+    phone = models.CharField(max_length=20, default='', blank=True)
+    email = models.EmailField(blank=True, default='', )
+    logo = models.URLField(blank=True, default='', )
+    logoTicket = models.URLField(blank=True, default='', )
+    website = models.URLField(blank=True, default='', )
+
+    first_color = models.CharField(max_length=20, blank=True, default='', )
+    second_color = models.CharField(max_length=20, blank=True, default='', )
+    third_color = models.CharField(max_length=20, blank=True, default='', )
+
+    def __str__(self):
+        return f" {self.pk}, {self.phone} "
+
+    class Meta:
+        verbose_name_plural = "PartnerInfos"
+
+
+class Entity(AuditFieldsModel):
+    title = models.CharField(max_length=80)
+    subtitle = models.CharField(default="", max_length=100)
+    entitytype = models.CharField(max_length=80, choices=ENTITYTYPE)
+    parent = models.ForeignKey('self', related_name='entityParent', on_delete=models.SET_NULL, null=True)
+    infos = models.ForeignKey(PartnerInfo, related_name='entities', on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f" {self.pk}, {self.title}, {self.entitytype} "
+
+    @property
+    def products(self):
+        return self.store_products.all()
+
+    class Meta:
+        verbose_name_plural = "Entities"
+
+
+class Profile(models.Model):
+    kycDocType = models.CharField(max_length=20, choices=USERKYCDOCTYPE, default='CNI')
+    profileLink = models.CharField(max_length=255, default="a.png", blank=True)
+    facebookLink = models.CharField(max_length=255, default="", blank=True)
+    instagramLink = models.CharField(max_length=255, default="", blank=True)
+    rectoLink = models.CharField(max_length=255, default="a.png", blank=True)
+    versoLink = models.CharField(max_length=255, default="a.png", blank=True)
+    selfieLink = models.CharField(max_length=255, default="a.png", blank=True)
+    passportLink = models.CharField(max_length=255, default="a.png", blank=True)
+    gender = models.CharField(max_length=25, choices=GENRE, default="I", blank=True)
+
+    def __str__(self):
+        return f" {self.pk}, {self.gender} "
+
+    class Meta:
+        verbose_name_plural = "Profiles"
+
+
+class UserAccount(AuditFieldsModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
+
+    address = models.ForeignKey(Address, related_name="account_address", on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey(Profile, related_name="account_profile", on_delete=models.SET_NULL, null=True)
+
+    isConfirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"USER ACCOUNT : {self.user.first_name} / {self.user.last_name}/ {self.role.code} "
+
+    class Meta:
+        verbose_name_plural = "User Accounts"
+
+
+class AuthSession(models.Model):
+    APP_TYPES = [
+        ('WEB', 'Web'),
+        ('TPE', 'Terminal de paiement'),
+        ('MOBILE', 'Mobile'),
+        ('DESKTOP', 'Ordinateur fixe'),
+    ]
+    user = models.ForeignKey(UserAccount, related_name="auth_session_account", on_delete=models.SET_NULL, null=True)
+    token = models.TextField(default="")
+    refresh = models.TextField(default="")
+
+    login_at = models.DateTimeField(default=timezone.now)
+    logout_at = models.DateTimeField(auto_now=True)
+
+    app = models.CharField(max_length=50, choices=APP_TYPES, default='WEB')
+
+    status = models.CharField(max_length=50, choices=STATUSSESSION, default='OPEN')
+
+    def __str__(self):
+        return f" SESSION : {self.user.user.first_name} / {self.user.user.last_name} / {self.user.created_at}"
+
+    class Meta:
+        verbose_name_plural = "Sessions"

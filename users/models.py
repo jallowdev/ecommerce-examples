@@ -1,5 +1,7 @@
 # Create your models here.
-from django.contrib.auth.models import AbstractUser
+import uuid
+
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.utils import timezone
 
@@ -78,9 +80,13 @@ FUNCTIONALITY = {
 ENTITYTYPE = {
     'RACINE': 'Racine',
     'FOURNISSEUR': 'Fournisseur',
-    'PARTNER': 'Partenaire',
+    #'PARTNER': 'Partenaire',
     'BOUTIQUE': 'Boutique',
     'CAISSE': 'Caisse',
+    'UNIVERSITY': 'Université',
+    'SCHOOL': 'École',
+    'CORPORATE': 'Entreprise',
+    'INSTITUTION': 'Institution publique',
 }
 GENRE = {
     'M': 'Masculin',
@@ -99,15 +105,30 @@ USERKYCDOCTYPE = {
 
 
 class User(AbstractUser):
+    SEGMENT_CHOICES = [
+        ('etudiant', 'Étudiant'),
+        ('professionnel', 'Professionnel'),
+        ('entreprise', 'Entreprise'),
+        ('institution', 'Institution publique'),
+    ]
+    identity = models.UUIDField(unique=True,null=False, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50, default='')
     phone = models.CharField(max_length=50, default="", blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    address = models.ForeignKey('Address', related_name="user_address", on_delete=models.SET_NULL, null=True)
+    profile = models.OneToOneField('Profile', related_name="user_profile", on_delete=models.SET_NULL, null=True)
+
+
     status = models.CharField(max_length=50, choices=STATUSUSER, default='ENABLE')
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    segment = models.CharField(max_length=20, choices=SEGMENT_CHOICES, blank=True)
+    is_email_verify = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.email}, {self.first_name} "
@@ -117,7 +138,8 @@ class User(AbstractUser):
 
 
 class AuditFieldsModel(models.Model):
-    identity = models.CharField(max_length=100, default=generate_code(7), unique=True, editable=False)
+    #identity = models.CharField(max_length=15, default=generate_code(7), unique=True, editable=False)
+    identity = models.UUIDField(unique=True,null=False, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -131,30 +153,13 @@ class AuditFieldsModel(models.Model):
         abstract = True
 
 
-class Role(models.Model):
-    code = models.CharField(max_length=50, primary_key=True, choices=ROLE)
-    name = models.CharField(max_length=80)
-    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
-
-    @property
-    def menu_list(self):
-        return self.role_functionalities.filter(code__in=['HOME', 'ENTITIES', 'STOCKS'], status='ENABLE').order_by(
-            'orderby')
-
-    def __str__(self):
-        return f"{self.code}, {self.name} "
-
-    class Meta:
-        verbose_name_plural = "Roles"
-
-
 class Functionality(models.Model):
     code = models.CharField(max_length=50, primary_key=True, choices=FUNCTIONALITY)
     libelle = models.CharField(max_length=80, default='')
     icon = models.CharField(max_length=80, default='')
     url = models.CharField(max_length=80, default='')
     parent = models.ForeignKey('self', related_name='functionalityParent', on_delete=models.SET_NULL, null=True)
-    roles = models.ManyToManyField(Role, related_name='role_functionalities')
+    roles = models.ManyToManyField(Group, related_name="fonctionnalites", blank=True)
     status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
     orderby = models.IntegerField(default=1)
 
@@ -163,7 +168,6 @@ class Functionality(models.Model):
 
     @property
     def child_list(self):
-        # return self.objects.filter(parent__code=self.code).all()
         return self.objects.all()
 
     class Meta:
@@ -244,22 +248,6 @@ class Profile(models.Model):
         verbose_name_plural = "Profiles"
 
 
-class UserAccount(AuditFieldsModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
-
-    address = models.ForeignKey(Address, related_name="account_address", on_delete=models.SET_NULL, null=True)
-    profile = models.ForeignKey(Profile, related_name="account_profile", on_delete=models.SET_NULL, null=True)
-
-    isConfirmed = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"USER ACCOUNT : {self.user.first_name} / {self.user.last_name}/ {self.role.code} "
-
-    class Meta:
-        verbose_name_plural = "User Accounts"
-
 
 class AuthSession(models.Model):
     APP_TYPES = [
@@ -268,7 +256,7 @@ class AuthSession(models.Model):
         ('MOBILE', 'Mobile'),
         ('DESKTOP', 'Ordinateur fixe'),
     ]
-    user = models.ForeignKey(UserAccount, related_name="auth_session_account", on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('User', related_name="user_sessions", on_delete=models.SET_NULL, null=True)
     token = models.TextField(default="")
     refresh = models.TextField(default="")
 
@@ -280,7 +268,7 @@ class AuthSession(models.Model):
     status = models.CharField(max_length=50, choices=STATUSSESSION, default='OPEN')
 
     def __str__(self):
-        return f" SESSION : {self.user.user.first_name} / {self.user.user.last_name} / {self.user.created_at}"
+        return f" SESSION : {self.user.first_name} / {self.user.last_name} / {self.user.created_at}"
 
     class Meta:
         verbose_name_plural = "Sessions"

@@ -378,6 +378,18 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS('Rôles créés avec succès avec leurs permissions')
         )
+        
+        
+        # Création d'un groupe avec des permissions spécifiques
+groupe_administrateur, created = Group.objects.get_or_create(name='Administrateurs')
+
+# Récupération des permissions pour une fonctionnalité
+permission_ajout = Permission.objects.get(codename='add_article')
+permission_modification = Permission.objects.get(codename='change_article')
+permission_suppression = Permission.objects.get(codename='delete_article')
+
+# Ajout des permissions au groupe
+groupe_administrateur.permissions.add(permission_ajout, permission_modification, permission_suppression)
 ````
 ### DECORATEUR ROLE ET PERMISSION 
 

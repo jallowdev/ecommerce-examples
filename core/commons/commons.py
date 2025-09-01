@@ -29,13 +29,14 @@ IMAGETYPE = {
 }
 
 
-def convert_string_to_date(str_date: str):
+def convert_string_to_date(str_date: str)->date:
     try:
         return datetime.strptime(str_date, '%d-%m-%Y').date()
     except ValueError:
         raise CustomException(
             message="Erreur sur le format. exemple 12-12-2024",
             status=400)
+
 
 
 def convert_date_to_str(date_input: date):
@@ -115,3 +116,7 @@ def generate_code(size: int):
 def generate_password_tmp(size: int):
     res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
     return str(res)
+
+def generate_slug(name: str, identity: str):
+    from django.utils.text import slugify
+    return f"{slugify(name)}-{identity}"

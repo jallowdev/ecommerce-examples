@@ -18,7 +18,7 @@ firebase = pyrebase.initialize_app(config)
 storage = firebase.storage()
 
 
-def save_file(path_firebase: str, file: UploadedFile):
+def save_file(path_firebase: str, file: UploadedFile)-> str:
     default_storage.save(file.name, file)
     storage.child(path_firebase + file.name).put("media/" + file.name)
     default_storage.delete(file.name)

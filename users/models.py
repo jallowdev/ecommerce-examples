@@ -135,7 +135,8 @@ class User(AbstractUser):
 
 
 class AuditFieldsModel(models.Model):
-    identity = models.UUIDField(unique=True, null=False, default=uuid.uuid4, editable=False)
+    #identity = models.UUIDField(unique=True, null=False, default=uuid.uuid4, editable=False)
+    identity = models.CharField(unique=True, null=False, default=str(uuid.uuid4)[:10], editable=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)

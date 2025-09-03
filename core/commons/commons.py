@@ -60,7 +60,7 @@ def convert_string_to_datetime(str_date: str):
 def convert_string_to_startDate(str_date: str):
     try:
         date = datetime.strptime(str_date, '%d-%m-%Y').date()
-        return datetime.utcnow().replace(year=date.year, month=date.month, day=date.day, hour=0, minute=0, second=0,
+        return datetime.now().replace(year=date.year, month=date.month, day=date.day, hour=0, minute=0, second=0,
                                          tzinfo=pytz.UTC)
     except ValueError:
         raise CustomException(
@@ -68,10 +68,10 @@ def convert_string_to_startDate(str_date: str):
             status=400)
 
 
-def convert_string_to_endDate(str_date: str):
+def convert_string_to_end_date(str_date: str):
     try:
         date = datetime.strptime(str_date, '%d-%m-%Y').date()
-        return datetime.utcnow().replace(year=date.year, month=date.month, day=date.day, hour=23, minute=59, second=59,
+        return datetime.now().replace(year=date.year, month=date.month, day=date.day, hour=23, minute=59, second=59,
                                          tzinfo=pytz.UTC)
 
     except ValueError:

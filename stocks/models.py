@@ -214,7 +214,7 @@ class ProductImage(models.Model):
 
 
 class Avis(AuditFieldsModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='avis')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='avis_product')
     note = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     comment = models.TextField(default='')
     is_approve = models.BooleanField(default=False)
@@ -222,7 +222,9 @@ class Avis(AuditFieldsModel):
     class Meta:
         verbose_name = "Avis"
         verbose_name_plural = "Avis"
-        unique_together = ['produit', 'auteur']
+        unique_together = ['product', 'created_by']
+
+
 
     def __str__(self):
         return f"Avis de {self.created_by.username} sur {self.product.name}"

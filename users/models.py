@@ -5,15 +5,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.utils import timezone
 
-from core.commons.commons import STATUS, generate_code
-
-'''
-class UserStatus(TextChoices):
-    ACTIVE = "ACTIVE", _("Active")
-    PENDING = "PENDING", _("Pending")
-    INACTIVE = "INACTIVE", _("Inactive")
-    CANCELLED = "CANCELLED", _("Cancelled")
-'''
+from core.commons.commons import STATUS, generate_slug
 
 STATUSUSER = {
     ('ENABLE', 'Active'),
@@ -80,7 +72,7 @@ FUNCTIONALITY = {
 ENTITYTYPE = {
     'RACINE': 'Racine',
     'FOURNISSEUR': 'Fournisseur',
-    #'PARTNER': 'Partenaire',
+    # 'PARTNER': 'Partenaire',
     'BOUTIQUE': 'Boutique',
     'CAISSE': 'Caisse',
     'UNIVERSITY': 'Université',
@@ -105,13 +97,20 @@ USERKYCDOCTYPE = {
 
 
 class User(AbstractUser):
+    ROLE_CHOICES = [
+        ('client', 'Client'),
+        ('vendeur', 'Vendeur'),
+        ('admin', 'Administrateur'),
+        ('gestionnaire', 'Gestionnaire de stock'),
+    ]
+
     SEGMENT_CHOICES = [
         ('etudiant', 'Étudiant'),
         ('professionnel', 'Professionnel'),
         ('entreprise', 'Entreprise'),
         ('institution', 'Institution publique'),
     ]
-    identity = models.UUIDField(unique=True,null=False, default=uuid.uuid4, editable=False)
+    identity = models.UUIDField(unique=True, null=False, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50, default='')
     phone = models.CharField(max_length=50, default="", blank=True)
@@ -120,9 +119,7 @@ class User(AbstractUser):
     address = models.ForeignKey('Address', related_name="user_address", on_delete=models.SET_NULL, null=True)
     profile = models.OneToOneField('Profile', related_name="user_profile", on_delete=models.SET_NULL, null=True)
 
-
     status = models.CharField(max_length=50, choices=STATUSUSER, default='ENABLE')
-
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -138,8 +135,7 @@ class User(AbstractUser):
 
 
 class AuditFieldsModel(models.Model):
-    #identity = models.CharField(max_length=15, default=generate_code(7), unique=True, editable=False)
-    identity = models.UUIDField(unique=True,null=False, default=uuid.uuid4, editable=False)
+    identity = models.UUIDField(unique=True, null=False, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -205,6 +201,9 @@ class PartnerInfo(models.Model):
     second_color = models.CharField(max_length=20, blank=True, default='', )
     third_color = models.CharField(max_length=20, blank=True, default='', )
 
+    domain = models.CharField(max_length=100, unique=True)
+    theme = models.JSONField(default=dict)
+
     def __str__(self):
         return f" {self.pk}, {self.phone} "
 
@@ -213,6 +212,7 @@ class PartnerInfo(models.Model):
 
 
 class Entity(AuditFieldsModel):
+    slug = models.SlugField(unique=True)
     title = models.CharField(max_length=80)
     subtitle = models.CharField(default="", max_length=100)
     entitytype = models.CharField(max_length=80, choices=ENTITYTYPE)
@@ -224,21 +224,26 @@ class Entity(AuditFieldsModel):
 
     @property
     def products(self):
-        return self.store_products.all()
+        return self.products_store.all()
 
     class Meta:
         verbose_name_plural = "Entities"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = generate_slug(self.title, str(self.identity)[:8])
+        super().save(*args, **kwargs)
+
 
 class Profile(models.Model):
     kycDocType = models.CharField(max_length=20, choices=USERKYCDOCTYPE, default='CNI')
-    profileLink = models.CharField(max_length=255, default="a.png", blank=True)
+    profileLink = models.CharField(max_length=255, default="", blank=True)
     facebookLink = models.CharField(max_length=255, default="", blank=True)
     instagramLink = models.CharField(max_length=255, default="", blank=True)
-    rectoLink = models.CharField(max_length=255, default="a.png", blank=True)
-    versoLink = models.CharField(max_length=255, default="a.png", blank=True)
-    selfieLink = models.CharField(max_length=255, default="a.png", blank=True)
-    passportLink = models.CharField(max_length=255, default="a.png", blank=True)
+    rectoLink = models.CharField(max_length=255, default="", blank=True)
+    versoLink = models.CharField(max_length=255, default="", blank=True)
+    selfieLink = models.CharField(max_length=255, default="", blank=True)
+    passportLink = models.CharField(max_length=255, default="", blank=True)
     gender = models.CharField(max_length=25, choices=GENRE, default="I", blank=True)
 
     def __str__(self):
@@ -246,7 +251,6 @@ class Profile(models.Model):
 
     class Meta:
         verbose_name_plural = "Profiles"
-
 
 
 class AuthSession(models.Model):

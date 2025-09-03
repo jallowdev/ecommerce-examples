@@ -1,8 +1,10 @@
 import uuid
 from typing import Optional
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from core.commons.commons import generate_slug
 from users.models import AuditFieldsModel, Entity
@@ -19,6 +21,7 @@ class Category(AuditFieldsModel):
     logo = models.FileField(upload_to='media/categories/')
     parent = models.ForeignKey('self', related_name='CategoryParent', on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(unique=True, null=False, blank=True)
+    store = models.ForeignKey(Entity, related_name='categories_store', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f" {self.identity}, {self.name}, {self.categoryType} "
@@ -46,6 +49,7 @@ class Brands(AuditFieldsModel):
     name = models.CharField(max_length=80)
     logo = models.FileField(upload_to='media/brands/')
     slug = models.SlugField(unique=True, null=False, blank=True)
+    store = models.ForeignKey(Entity, related_name='brands_store', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f" {self.identity}, {self.name}"
@@ -80,7 +84,22 @@ class Unity(AuditFieldsModel):
 
 
 class Product(AuditFieldsModel):
-    name = models.CharField(max_length=80)
+
+    DISPONIBILITE_CHOICES = [
+        ('en_stock', 'En stock'),
+        ('rupture', 'Rupture de stock'),
+        ('precommande', 'Précommande'),
+    ]
+
+    BADGE_CHOICES = [
+        ('nouveau', 'Nouveau'),
+        ('promo', 'Promotion'),
+        ('populaire', 'Populaire'),
+        ('etudiant', 'Remise étudiante'),
+        ('pro', 'Remise professionnelle'),
+    ]
+
+    name = models.CharField(max_length=150)
     description = models.TextField(default="")
     slug = models.SlugField(unique=True, null=False, blank=True)
     qrcode = models.TextField(default="", null=False)
@@ -104,7 +123,14 @@ class Product(AuditFieldsModel):
     expiration_date = models.DateField(null=True)
     entrepot_address = models.CharField(max_length=20, default='')
 
-    store = models.ForeignKey(Entity, on_delete=models.PROTECT, related_name='store_products', null=True)
+    disponibility = models.CharField(max_length=20, choices=DISPONIBILITE_CHOICES, default='en_stock')
+    badges = models.JSONField(default=list, blank=True)
+    specifications = models.JSONField(default=dict)
+    images = models.JSONField(default=list)
+
+    # SEO
+    meta_title = models.CharField(max_length=100, blank=True)
+    meta_description = models.TextField(blank=True)
 
     @property
     def recto(self)->Optional[str]:
@@ -153,17 +179,28 @@ class Product(AuditFieldsModel):
     def get_absolute_url(self):
         return reverse("product_detail", kwargs={"slug": self.slug})
 
-    """
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f'{self.name}-{self.category.name}-{self.unity.name}-{self.identity}')
-        super().save(*args, **kwargs)
-    """
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = generate_slug(self.name, str(self.identity)[:8])
         super().save(*args, **kwargs)
+
+class StockMov(AuditFieldsModel):
+    """Historique des mouvements de stock"""
+    ACTION_CHOICES = (
+        ('in', 'Entrée'),
+        ('out', 'Sortie'),
+        ('adjust', 'Ajustement'),
+        ('sold', 'Vente'),
+        ('return', 'Retour'),
+    )
+
+    inventory = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products_movement')
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    quantity = models.IntegerField()
+    previous_quantity = models.IntegerField()
+    new_quantity = models.IntegerField()
+    reason = models.TextField(blank=True)
+    reference = models.CharField(max_length=100, blank=True)
 
 
 class ProductImage(models.Model):
@@ -173,3 +210,49 @@ class ProductImage(models.Model):
 
     class Meta:
         verbose_name_plural = "Image products"
+
+
+
+class Avis(AuditFieldsModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='avis')
+    note = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    comment = models.TextField(default='')
+    is_approve = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Avis"
+        verbose_name_plural = "Avis"
+        unique_together = ['produit', 'auteur']
+
+    def __str__(self):
+        return f"Avis de {self.created_by.username} sur {self.product.name}"
+
+
+
+class Promotion(AuditFieldsModel):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    type_promotion = models.CharField(max_length=20, choices=[
+        ('pourcentage', 'Pourcentage'),
+        ('montant_fixe', 'Montant fixe'),
+        ('livraison_gratuite', 'Livraison gratuite'),
+    ])
+    value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    products = models.ManyToManyField(Product, blank=True)
+    categories = models.ManyToManyField(Category, blank=True)
+    date_debut = models.DateTimeField(auto_now=True)
+    date_fin = models.DateTimeField()
+    is_enable = models.BooleanField(default=True)
+    segments_cibles = models.JSONField(default=list, blank=True)
+    store = models.ForeignKey(Entity, related_name='promotion_store', on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        ordering = ['-date_debut']
+
+    def __str__(self):
+        return self.name
+
+    def est_active(self):
+        maintenant = timezone.now()
+        return self.is_enable and self.date_debut <= maintenant <= self.date_fin
+

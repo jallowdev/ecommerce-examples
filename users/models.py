@@ -116,6 +116,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length=50, default="", blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+
     address = models.ForeignKey('Address', related_name="user_address", on_delete=models.SET_NULL, null=True)
     profile = models.OneToOneField('Profile', related_name="user_profile", on_delete=models.SET_NULL, null=True)
 

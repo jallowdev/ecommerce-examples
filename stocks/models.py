@@ -6,7 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
-from core.commons.commons import generate_slug
+from core.commons.commons import generate_slug, STATUS
 from users.models import AuditFieldsModel, Entity
 
 CATEGORY = {
@@ -15,16 +15,19 @@ CATEGORY = {
 }
 
 
-class Category(AuditFieldsModel):
+class Category(models.Model):
     name = models.CharField(max_length=80)
     categoryType = models.CharField(max_length=80, choices=CATEGORY, default='CATEGORY')
-    logo = models.FileField(upload_to='media/categories/')
+    logo = models.TextField(default='')
+    icon = models.TextField(default='')
+
     parent = models.ForeignKey('self', related_name='CategoryParent', on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(unique=True, null=False, blank=True)
     store = models.ForeignKey(Entity, related_name='categories_store', on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
 
     def __str__(self):
-        return f" {self.identity}, {self.name}, {self.categoryType} "
+        return f" {self.pk}, {self.name}, {self.categoryType} "
 
     class Meta:
         verbose_name = "Category"
@@ -41,18 +44,19 @@ class Category(AuditFieldsModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = generate_slug(self.name, str(self.identity)[:8])
+            self.slug = generate_slug(self.name, str(self.pk))
         super().save(*args, **kwargs)
 
 
-class Brands(AuditFieldsModel):
+class Brands(models.Model):
     name = models.CharField(max_length=80)
     logo = models.FileField(upload_to='media/brands/')
     slug = models.SlugField(unique=True, null=False, blank=True)
     store = models.ForeignKey(Entity, related_name='brands_store', on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
 
     def __str__(self):
-        return f" {self.identity}, {self.name}"
+        return f" {self.pk}, {self.name}"
 
     class Meta:
         verbose_name = "Brand"
@@ -67,23 +71,31 @@ class Brands(AuditFieldsModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = generate_slug(self.name, str(self.identity)[:8])
+            self.slug = generate_slug(self.name, str(self.pk))
         super().save(*args, **kwargs)
 
 
-class Unity(AuditFieldsModel):
+class Unity(models.Model):
     name = models.CharField(max_length=80)
     code = models.CharField(default=str(uuid.uuid4), unique=True, max_length=100)
     slug = models.CharField(max_length=50, default="")
+    store = models.ForeignKey(Entity, related_name='unities_store', on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
 
     def __str__(self):
-        return f" {self.identity}, {self.name}"
+        return f" {self.code}, {self.name}"
 
     class Meta:
-        verbose_name_plural = "Unities"
+        verbose_name_plural = "Unitées"
 
 
 class Product(AuditFieldsModel):
+
+    '''
+    - best seller
+    - one sale
+    - new product
+    '''
 
     DISPONIBILITE_CHOICES = [
         ('en_stock', 'En stock'),
@@ -92,6 +104,7 @@ class Product(AuditFieldsModel):
     ]
 
     BADGE_CHOICES = [
+        ('plusVendu', 'Plus Vendu'),
         ('nouveau', 'Nouveau'),
         ('promo', 'Promotion'),
         ('populaire', 'Populaire'),

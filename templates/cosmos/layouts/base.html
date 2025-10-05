@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" data-layout-mode="light_mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ogani Template">
+    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Agri-Elevage {% block title %}{% endblock %}</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+
+    {% include 'cosmos/includes/css.html' %}
+
+</head>
+<body>
+<div class="main-wrapper">
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+{% comment %}
+
+    {% include 'bo/includes/header1.html' %}
+{% endcomment %}
+
+    <div class="content container-fluid">
+        {% block content %}
+        {% endblock content %}
+        {% include 'cosmos/includes/footer1.html' %}
+    </div>
+</div>
+
+{% include 'cosmos/includes/scripts.html' %}
+</body>
+</html>

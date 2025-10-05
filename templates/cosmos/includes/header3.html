@@ -1,0 +1,232 @@
+{% load static %}
+{% load i18n %}
+<header class="site-header header-opt-3 cate-show">
+    <!-- header-content -->
+    <div class="header-content">
+        <div class="container">
+
+            <div class="clearfix">
+                <div class="custom-link">
+                    <ul class="link">
+                        <li><a href="">Email: contact@cosmos.com </a></li>
+                        <li><a href="">Tel: +221 77 000 00 00 </a></li>
+                    </ul>
+                    <div class="text-free"><img src="{% static 'assets/cosmos/images/icon/index3/text-free.png' %}"
+                                                alt="img">Promotion de 5% à partir de 10 articles
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-3 nav-left">
+                    <!-- logo -->
+                    <strong class="logo">
+                        <a href=""><img src="{% static 'assets/cosmos/images/media/index3/logo.png' %}" alt="logo"></a>
+                    </strong><!-- logo -->
+                </div>
+
+                <div class="col-md-5 col-lg-6 nav-mind">
+
+                    <!-- block search -->
+                    {% include 'cosmos/home/components/search-home.html' %}
+                    <!-- block search -->
+
+                </div>
+
+                <div class="col-md-4 col-lg-3 nav-right">
+
+                    <!-- block mini cart -->
+
+                    {% include 'cosmos/cart/components/mini-cart-home.html' %}
+                    <!-- block mini cart -->
+
+                    <!-- link  Login-->
+                    <a class="link-login" href=""><span>Login</span></a>
+                    <!-- link  Login-->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- header-content -->
+
+    <div class=" header-nav mid-header">
+        <div class="container">
+            <div class="box-header-nav">
+
+                <span data-action="toggle-nav-cat" class="nav-toggle-menu nav-toggle-cat"><span>Categories</span><i
+                        aria-hidden="true" class="fa fa-bars"></i></span>
+
+                <!-- menu -->
+                {% include 'cosmos/home/components/menu.html' %}
+                <!-- menu -->
+
+                <span data-action="toggle-nav" class="nav-toggle-menu"><span>Menu</span><i aria-hidden="true"
+                                                                                           class="fa fa-bars"></i></span>
+
+                <div class="block-minicart dropdown ">
+                    <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                        <span class="cart-icon"></span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <form>
+                            <div class="minicart-content-wrapper">
+                                <div class="subtitle">
+                                    You have 6 item(s) in your cart
+                                </div>
+                                <div class="minicart-items-wrapper">
+                                    <ol class="minicart-items">
+                                        <li class="product-item">
+                                            <a class="product-item-photo" href="#" title="The Name Product">
+                                                <img class="product-image-photo"
+                                                     src="{% static 'assets/cosmos/images/media/index1/minicart.jpg' %}"
+                                                     alt="The Name Product">
+                                            </a>
+                                            <div class="product-item-details">
+                                                <strong class="product-item-name">
+                                                    <a href="#">Donec Ac Tempus</a>
+                                                </strong>
+                                                <div class="product-item-price">
+                                                    <span class="price">61,19 €</span>
+                                                </div>
+                                                <div class="product-item-qty">
+                                                    <span class="label">Qty: </span><span class="number">1</span>
+                                                </div>
+                                                <div class="product-item-actions">
+                                                    <a class="action delete" href="#" title="Remove item">
+                                                        <span>Remove</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="product-item">
+                                            <a class="product-item-photo" href="#" title="The Name Product">
+                                                <img class="product-image-photo"
+                                                     src="{% static 'assets/cosmos/images/media/index1/minicart2.jpg' %}"
+                                                     alt="The Name Product">
+                                            </a>
+                                            <div class="product-item-details">
+                                                <strong class="product-item-name">
+                                                    <a href="#">Donec Ac Tempus</a>
+                                                </strong>
+                                                <div class="product-item-price">
+                                                    <span class="price">61,19 €</span>
+                                                </div>
+                                                <div class="product-item-qty">
+                                                    <span class="label">Qty: </span><span class="number">1</span>
+                                                </div>
+                                                <div class="product-item-actions">
+                                                    <a class="action delete" href="#" title="Remove item">
+                                                        <span>Remove</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class="subtotal">
+                                    <span class="label">Total</span>
+                                    <span class="price">$630</span>
+                                </div>
+                                <div class="actions">
+                                    <!-- <a class="btn btn-viewcart" href="">
+                                            <span>Shopping bag</span>
+                                        </a> -->
+                                    <button class="btn btn-checkout" type="button" title="Check Out">
+                                        <span>Checkout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="block-search">
+                    <div class="block-title">
+                        <span>Search</span>
+                    </div>
+                    <div class="block-content">
+                        <div class="form-search">
+                            <form>
+                                <div class="box-group">
+                                    <input type="text" class="form-control" placeholder="Search here...">
+                                    <button class="btn btn-search" type="button"><span>search</span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dropdown setting">
+                    <a data-toggle="dropdown" role="button" href="#" class="dropdown-toggle "><span>Settings</span> <i
+                            aria-hidden="true" class="fa fa-user"></i></a>
+                    <div class="dropdown-menu  ">
+                        <div class="switcher  switcher-language">
+                            <strong class="title">Select language</strong>
+                            <ul class="switcher-options ">
+                                <li class="switcher-option">
+                                    <a href="#">
+                                        <img class="switcher-flag" alt="flag"
+                                             src="{% static 'assets/cosmos/images/flags/flag_french.png' %}">
+                                    </a>
+                                </li>
+                                <li class="switcher-option">
+                                    <a href="#">
+                                        <img class="switcher-flag" alt="flag"
+                                             src="{% static 'assets/cosmos/images/flags/flag_germany.png' %}">
+                                    </a>
+                                </li>
+                                <li class="switcher-option">
+                                    <a href="#">
+                                        <img class="switcher-flag" alt="flag"
+                                             src="{% static 'assets/cosmos/images/flags/flag_english.png' %}">
+                                    </a>
+                                </li>
+                                <li class="switcher-option switcher-active">
+                                    <a href="#">
+                                        <img class="switcher-flag" alt="flag"
+                                             src="{% static 'assets/cosmos/images/flags/flag_spain.png' %}">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="switcher  switcher-currency">
+                            <strong class="title">SELECT CURRENCIES</strong>
+                            <ul class="switcher-options ">
+                                <li class="switcher-option">
+                                    <a href="#">
+                                        <i class="fa fa-usd" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="switcher-option switcher-active">
+                                    <a href="#">
+                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="switcher-option">
+                                    <a href="#">
+                                        <i class="fa fa-gbp" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <ul class="account">
+                            <li><a href="">Wishlist</a></li>
+                            <li><a href="">My Account</a></li>
+                            <li><a href="">Checkout</a></li>
+                            <li><a href="">Compare</a></li>
+                            <li><a href="">Login/Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</header>

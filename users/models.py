@@ -117,8 +117,9 @@ class User(AbstractUser):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
-    address = models.ForeignKey('Address', related_name="user_address", on_delete=models.SET_NULL, null=True)
-    profile = models.OneToOneField('Profile', related_name="user_profile", on_delete=models.SET_NULL, null=True)
+    entity = models.ForeignKey('Entity', related_name="users_entity", on_delete=models.SET_NULL, null=True)
+    address = models.ForeignKey('Address', related_name="users_address", on_delete=models.SET_NULL, null=True)
+    profile = models.OneToOneField('Profile', related_name="users_profile", on_delete=models.SET_NULL, null=True)
 
     status = models.CharField(max_length=50, choices=STATUSUSER, default='ENABLE')
 
@@ -132,7 +133,8 @@ class User(AbstractUser):
         return f"{self.email}, {self.first_name} "
 
     class Meta:
-        verbose_name_plural = "Users"
+        verbose_name = "Utilisateur"
+        verbose_name_plural = "Utilisateurs"
 
 
 class AuditFieldsModel(models.Model):
@@ -230,7 +232,7 @@ class Entity(AuditFieldsModel):
         return self.products_store.all()
 
     class Meta:
-        verbose_name_plural = "Entities"
+        verbose_name_plural = "Entitées"
 
     def save(self, *args, **kwargs):
         if not self.slug:

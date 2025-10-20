@@ -34,17 +34,16 @@ class LoginView(View):
                     request.session['username'] = email
                     msg = 'login avec succès. Bienvenue dans votre espace de travail.'
                     messages.success(request, message=msg)
+                    return redirect('index_cosmos')
 
                 else:
                     msg = 'Login ou mot de passe incorrect. Veuillez verifier vos credential.'
-                    messages.warning(request, message=msg)
                     raise CustomException(message=msg,status=400)
-
 
             return redirect('login_cosmos')
         except CustomException as ex:
             print(f'## CustomException : {ex}')
-            messages.error(request, ex.detail)
+            messages.warning(request, ex.detail)
             return redirect('login_cosmos')
 
         except Exception as ex:

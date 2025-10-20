@@ -20,15 +20,16 @@
     <div id="preloder">
         <div class="loader"></div>
     </div>
-{% comment %}
+    <div class="wrapper">
+        <main class="site-main">
+            {% include 'cosmos/includes/header3.html' %}
 
-    {% include 'bo/includes/header1.html' %}
-{% endcomment %}
-
-    <div class="content container-fluid">
-        {% block content %}
-        {% endblock content %}
-        {% include 'cosmos/includes/footer1.html' %}
+            <div class="content container-fluid">
+                {% block content %}
+                {% endblock content %}
+                {% include 'cosmos/includes/footer1.html' %}
+            </div>
+        </main>
     </div>
 </div>
 

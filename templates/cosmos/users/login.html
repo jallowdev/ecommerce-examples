@@ -1,0 +1,70 @@
+{% extends "cosmos/layouts/base.html" %}
+
+{% load static %}
+
+{% block title %} Accueil {% endblock %}
+
+{% block content %}
+    <div class="columns container">
+        <!-- Block  Breadcrumb-->
+
+        <ol class="breadcrumb no-hide">
+            <li><a href="{% url 'index_cosmos' %}">Accueil </a></li>
+            <li><a href="#">Compte </a></li>
+        </ol>
+
+        <h2 class="page-heading">
+            <span class="page-heading-title2">Authentification</span>
+        </h2>
+
+        <div class="page-content">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="box-authentication">
+                        <h3>Créer votre compte</h3>
+                        <form method="post" action="{% url 'register_cosmos' %}">
+                            {% csrf_token %}
+                            {% if sign_up_form.errors %}
+                                <p style="color: red;">{{ sign_up_form.errors }}</p>
+                            {% endif %}
+                            <label for="firstname" class="form-label">Prénom</label>
+                            {{ sign_up_form.first_name }}
+                            <label for="last_name" class="form-label">Nom</label>
+                            {{ sign_up_form.last_name }}
+
+                            <label for="email" class="form-label">Email</label>
+                            {{ sign_up_form.email }}
+                            <label for="phone" class="form-label">Téléphone</label>
+                            {{ sign_up_form.phone }}
+                            <label for="password1" class="form-label">Password</label>
+                            {{ sign_up_form.password1 }}
+                            <label for="password2" class="form-label">Confirmer votre mote de passe</label>
+                            {{ sign_up_form.password2 }}
+                            <button type="submit" class="button btn"><i class="fa fa-user"></i> Enregistrer</button>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="box-authentication">
+                        <h3>Connectez vous</h3>
+                        <form method="post" action="{% url 'login_cosmos' %}">
+                            {% csrf_token %}
+                            {% if form.errors %}
+                                <p style="color: red;">{{ form.errors }}</p>
+                            {% endif %}
+                            <label for="emmail_login">Email</label>
+                            {{ form.email }}
+                            <label for="password_login">mot de passe</label>
+                            {{ form.password }}
+                           {% comment %} <input type="text" class="m-2 form-control rounded"/>{% endcomment %}
+                            <button type="submit" class="button btn"><i class="fa fa-lock"></i> Connexion</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

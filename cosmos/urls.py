@@ -28,5 +28,5 @@ urlpatterns = [
     path('', index_cosmos, name='index_cosmos'),
     path('checkout/', checkout_cosmos, name='checkout_cosmos'),
     path('users/', include('users.urls')),
-
+    path('stocks/', include('stocks.urls')),
 ]

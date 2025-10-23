@@ -122,28 +122,36 @@ class Product(AuditFieldsModel):
     unity = models.ForeignKey(Unity, related_name='unities', on_delete=models.SET_NULL, null=True)
     brand = models.ForeignKey(Brands, related_name='brands', on_delete=models.SET_NULL, null=True)
 
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    salePrice = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0,null=True)
+    salePrice = models.DecimalField(max_digits=10, decimal_places=2, default=0,null=True)
 
-    minStock = models.IntegerField(default=0)
-    initialStock = models.IntegerField(default=0)
+    minStock = models.IntegerField(default=0,null=True)
+    initialStock = models.IntegerField(default=0,null=True)
 
-    inStock = models.IntegerField(default=0)
+    inStock = models.IntegerField(default=0,null=True)
 
-    outStock = models.IntegerField(default=0)
+    outStock = models.IntegerField(default=0,null=True)
 
-    alert_threshold = models.IntegerField(default=10)
+    alert_threshold = models.IntegerField(default=0,null=True)
     expiration_date = models.DateField(null=True)
-    entrepot_address = models.CharField(max_length=20, default='')
+    entrepot_address = models.CharField(max_length=20, default='',blank=True)
 
-    disponibility = models.CharField(max_length=20, choices=DISPONIBILITE_CHOICES, default='en_stock')
-    badges = models.JSONField(default=list, blank=True)
-    specifications = models.JSONField(default=dict)
-    images = models.JSONField(default=list)
+    disponibility = models.CharField(max_length=20, choices=DISPONIBILITE_CHOICES, default='en_stock',blank=True)
+
+    #badges = models.JSONField(default=list, blank=True)
+    #specifications = models.JSONField(default=dict)
+
+    images = models.JSONField(default=list,blank=True,null=True)
 
     # SEO
-    meta_title = models.CharField(max_length=100, blank=True)
-    meta_description = models.TextField(blank=True)
+    meta_title = models.CharField(max_length=100, blank=True,null=True,default='')
+    #meta_description = models.TextField(blank=True)
+
+    # PROMO
+    is_promo = models.BooleanField(null=True,default=False)
+    promo_percent = models.IntegerField(null=True,default=False,db_default=5)
+    #promo_price = models.IntegerField(null=True,default=False,db_default=5)
+    #meta_description = models.TextField(blank=True)
 
     @property
     def recto(self)->Optional[str]:

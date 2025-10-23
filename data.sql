@@ -61,22 +61,16 @@ insert into users_entity(id, identity, title, subtitle, entitytype, status,paren
 	VALUES (3,'003', 'OUDIA BOUTIQUE', 'OUDIA SERVICE', 'BOUTIQUE','ENABLE',2,'2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00','');
 
 -- UNITES
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (1, '001', 'Kilogramme', 'KG', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (2, '002', 'Gramme', 'G', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (3, '003', 'Mettre', 'M', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (4, '004', 'Tonne', 'T', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (5, '005', 'Piece', 'PC', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (6, '006', 'Litre', 'L', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (7, '007', 'Cartone', 'CR', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
-insert into stocks_unity(id, identity, name, code, slug, status,created_at, updated_at)
-	VALUES (8, '008', 'Douzaine', '12D', '', 'ENABLE', '2025-01-15 19:30:31.566188+00', '2025-01-15 19:30:31.566188+00');
+insert into stocks_unity(id, name, code, slug, status) VALUES (1, 'Kilogramme', 'KG', '001', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (2, 'Gramme', 'G', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (3,  'Mettre', 'M', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (4, 'Tonne', 'T', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (5, 'Piece', 'PC', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (6, 'Litre', 'L', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (7, 'Cartone', 'CR', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (8, 'Douzaine', '12D', '', 'ENABLE');
+insert into stocks_unity(id,  name, code, slug, status) VALUES (9, 'Bidon', 'B', '', 'ENABLE');
+update stocks_unity set store_id=3 ;
 
 -- payment
 insert into invoices_payment(id, name, code, icon, status) VALUES (10, 'Espece', 'CASH', '', 'ENABLE');
@@ -85,12 +79,43 @@ insert into invoices_payment(id, name, code, icon, status) VALUES (12, 'Orange m
 insert into invoices_payment(id, name, code, icon, status) VALUES (13, 'Carte Bancaire', 'BANKCARD', '', 'ENABLE');
 
 -- CATEGORY
-INSERT INTO stocks_category(id, code,categoryType,name,status)VALUES (1, '001','CATEGORY','Ordinateur', 'ENABLE');
-INSERT INTO stocks_category(id, code,categoryType,name,status)VALUES (2, '002','CATEGORY','Television', 'ENABLE');
-INSERT INTO stocks_category(id, code,categoryType,name,status)VALUES (3, '003','CATEGORY','Telephone', 'ENABLE');
-INSERT INTO stocks_category(id, code,categoryType,name,status)VALUES (4, '004','CATEGORY','Alimentation', 'ENABLE');
-INSERT INTO stocks_category(id, code,categoryType,name,status)VALUES (5, '005','CATEGORY','Medicament', 'ENABLE');
-INSERT INTO stocks_category(id, code,categoryType,name,status)VALUES (6, '006','CATEGORY','Electromanager', 'ENABLE');
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo)VALUES (1, '001','CATEGORY','Parfums', 'ENABLE','');
+
+
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo,parent_id)VALUES (2, '002','CATEGORY','Eaux de Parfums', 'ENABLE','',1);
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo,parent_id)VALUES (3, '003','CATEGORY','Brume Parfumée', 'ENABLE','',1);
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo,parent_id)VALUES (4, '004','CATEGORY','Coffrets cadeaux', 'ENABLE','',1);
+
+
+
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo)VALUES (20, '0020','CATEGORY','Maquillage', 'ENABLE','');
+
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo)VALUES (30, '0030','CATEGORY','Modes', 'ENABLE', '');
+
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo)VALUES (40, '0040','CATEGORY','Corps', 'ENABLE','');
+
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo)VALUES (50, '0050','CATEGORY','Sacs', 'ENABLE','');
+
+INSERT INTO stocks_category(id,slug,categoryType,name,status,logo)VALUES (60, '0060','CATEGORY','Chaussures', 'ENABLE','');
+
+update stocks_category set store_id=3 ;
+
+-- PRODUCTS
+
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (1, '001', 'Bleu de Chanel – Chanel', 'Un parfum boisé aromatique pour l’homme moderne, libre et audacieux.', 'bleu-de-chanel-chanel', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (2, '002', 'Sauvage – Dior', 'Sauvage – Dior', '002', '', 10000, 15000, 10, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (3, '003', 'La Vie est Belle – Lancôme', 'La Vie est Belle – Lancôme', '003', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (4, '004', 'Black Opium – Yves Saint Laurent', 'Black Opium – Yves Saint Laurent', '004', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (5, '005', 'J’adore – Dior', 'J’adore – Dior', '005', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (6, '006', 'Flowerbomb – Viktor & Rolf', 'Flowerbomb – Viktor & Rolf', '006', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (7, '007', 'Romance – Ralph Lauren', 'Romance – Ralph Lauren', '007', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (8, '008', 'Good Girl – Carolina Herrera', 'Good Girl – Carolina Herrera', '008', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (9, '009', 'Light Blue Intense – Dolce & Gabbana', 'Light Blue Intense – Dolce & Gabbana', '009', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (10, '010', 'Comme une Évidence – Yves Rocher', 'Comme une Évidence – Yves Rocher', '010', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
+update stocks_product set store_id=3 ;
+
+
 
 -- ADDRESS
 insert into users_profile(

@@ -2,12 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.urls import path, include
 
-
-def index_cosmos(request):
-    context = {'segment': 'index'}
-
-    html_template = loader.get_template('cosmos/home/home3.html')
-    return HttpResponse(html_template.render(context, request))
+from cosmos.views import index_cosmos
 
 
 def checkout_cosmos(request):

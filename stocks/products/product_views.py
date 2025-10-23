@@ -20,10 +20,12 @@ def product_list_home(request):
         return redirect('unities')
 
 
-def product_by_category_list_home(request, category_id):
+def product_by_category_list_home(request, category_id=None):
     try:
-        products = Product.objects.exclude(status__in=['CANCEL', 'ARCHIVE', 'DISABLE']).filter(category_id=category_id).order_by('-pk')
-
+        if category_id is None:
+            products = Product.objects.exclude(status__in=['CANCEL', 'ARCHIVE', 'DISABLE']).filter(category_id=category_id).order_by('-pk')
+        else:
+            products = Product.objects.exclude(status__in=['CANCEL', 'ARCHIVE', 'DISABLE']).order_by('-pk')
         categories = Category.objects.exclude(status='ARCHIVE').order_by('-pk')
         brands = Brands.objects.exclude(status='ARCHIVE').order_by('-pk')
         unities = Unity.objects.exclude(status='ARCHIVE').order_by('-pk')

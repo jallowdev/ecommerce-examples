@@ -76,13 +76,15 @@
                                         </button>
 
                                     </div>
-                                    <span class="product-item-label label-sale-off">30% <span>off</span></span>
+                                    {% if p.is_promo %}
+                                        <span class="product-item-label label-sale-off">{{ p.promo_percent }}% <span>off</span></span>
+                                    {% endif %}
                                     <div class="product-item-detail">
                                         <strong class="product-item-name"><a href="">{{ p.name}}</a></strong>
                                         <div class="clearfix">
                                             <div class="product-item-price">
-                                                <span class="price">$45.00</span>
-                                                <span class="old-price">$52.00</span>
+                                                <span class="price">{{ p.price }} Fcfa</span>
+                                                <span class="old-price">{{ p.price }} Fcfa</span>
                                             </div>
                                             <div class="product-reviews-summary">
                                                 <div class="rating-summary">

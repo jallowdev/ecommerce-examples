@@ -47,3 +47,18 @@ def category_list_home(request):
         print(f'## EXCEPTION: {ex}')
         messages.error(request, 'Erreur de traitement du serveur..')
         return redirect('unities')
+
+
+def category_list(request,pk=None):
+    try:
+        if pk is not None:
+            categories = Category.objects.filter(pk=pk).exclude(status__in=['CANCEL', 'ARCHIVE', 'DISABLE']).order_by('-pk')
+        else:
+            categories = Category.objects.exclude(status__in=['CANCEL', 'ARCHIVE', 'DISABLE']).order_by('-pk')
+
+        return render(request, 'cosmos/stocks/products/product_list.html',
+                      {"categories": categories})
+    except Exception as ex:
+        print(f'## EXCEPTION: {ex}')
+        messages.error(request, 'Erreur de traitement du serveur..')
+        return redirect('unities')

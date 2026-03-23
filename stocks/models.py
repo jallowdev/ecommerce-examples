@@ -25,6 +25,7 @@ class Category(models.Model):
     slug = models.SlugField(unique=True, null=False, blank=True)
     store = models.ForeignKey(Entity, related_name='categories_store', on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=50, choices=STATUS, default='ENABLE')
+    order_by=models.IntegerField(default=1,null=True)
 
     def __str__(self):
         return f" {self.pk}, {self.name}, {self.categoryType} "
@@ -46,6 +47,19 @@ class Category(models.Model):
         if not self.slug:
             self.slug = generate_slug(self.name, str(self.pk))
         super().save(*args, **kwargs)
+
+    def get_full_category(self):
+        if self.parent:
+            return f"{self.parent.name} > {self.name}"
+        return self.name
+
+    def get_subcategories(self)->models.QuerySet:
+        return Category.objects.filter(parent=self).order_by('-pk')
+        #return Category.objects.filter(parent=self).order_by('-pk')
+
+    @property
+    def get_products(self)->models.QuerySet:
+        return self.categories.all().exclude(status__in=['CANCEL', 'ARCHIVE', 'DISABLE']).order_by('-pk')
 
 
 class Brands(models.Model):
@@ -90,7 +104,6 @@ class Unity(models.Model):
 
 
 class Product(AuditFieldsModel):
-
     '''
     - best seller
     - one sale
@@ -121,9 +134,9 @@ class Product(AuditFieldsModel):
     category = models.ForeignKey(Category, related_name='categories', on_delete=models.SET_NULL, null=True)
     unity = models.ForeignKey(Unity, related_name='unities', on_delete=models.SET_NULL, null=True)
     brand = models.ForeignKey(Brands, related_name='brands', on_delete=models.SET_NULL, null=True)
-
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0,null=True)
     salePrice = models.DecimalField(max_digits=10, decimal_places=2, default=0,null=True)
+    image = models.ForeignKey('StockImage', related_name='images', on_delete=models.SET_NULL, null=True)
 
     minStock = models.IntegerField(default=0,null=True)
     initialStock = models.IntegerField(default=0,null=True)
@@ -140,24 +153,21 @@ class Product(AuditFieldsModel):
 
     #badges = models.JSONField(default=list, blank=True)
     #specifications = models.JSONField(default=dict)
+    #default_image = models.TextField(blank=True,default='')
 
-    images = models.JSONField(default=list,blank=True,null=True)
+    order_by=models.IntegerField(default=1,null=True)
 
     # SEO
     meta_title = models.CharField(max_length=100, blank=True,null=True,default='')
-    #meta_description = models.TextField(blank=True)
+    meta_description = models.TextField(blank=True)
 
     # PROMO
     is_promo = models.BooleanField(null=True,default=False)
     promo_percent = models.IntegerField(null=True,default=False,db_default=5)
-    #promo_price = models.IntegerField(null=True,default=False,db_default=5)
-    #meta_description = models.TextField(blank=True)
 
-    @property
-    def recto(self)->Optional[str]:
-        if len(self.product_images.all()):
-            return self.product_images.all()[0].url
-        return ''
+    is_home = models.BooleanField(null=True,default=False)
+    is_trending = models.BooleanField(null=True,default=False)
+
 
     @property
     def current_stock(self)-> int:
@@ -172,7 +182,7 @@ class Product(AuditFieldsModel):
         return int(self.price * self.current_stock)
 
     @property
-    def get_price(self):
+    def get_price(self)->int:
         return int(self.price)
 
     @property
@@ -203,6 +213,11 @@ class Product(AuditFieldsModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = generate_slug(self.name, str(self.identity)[:8])
+
+        if not self.meta_title:
+            self.meta_title=self.name
+            self.meta_description=self.description
+
         super().save(*args, **kwargs)
 
 class StockMov(AuditFieldsModel):
@@ -224,13 +239,15 @@ class StockMov(AuditFieldsModel):
     reference = models.CharField(max_length=100, blank=True)
 
 
-class ProductImage(models.Model):
-    product = models.ForeignKey(Product, related_name='product_images', on_delete=models.SET_NULL, null=True)
-    name = models.CharField(max_length=80)
-    url = models.TextField(default='', max_length=300)
+class StockImage(models.Model):
+    banner = models.TextField(default='', max_length=300)
+    gm = models.TextField(default='', max_length=300)
+    pm = models.TextField(default='', max_length=300)
+    name = models.CharField(default='', max_length=100)
+    #image = models.JSONField(default=list,blank=True,null=True)
 
     class Meta:
-        verbose_name_plural = "Image products"
+        verbose_name_plural = "Image Stock"
 
 
 
@@ -270,7 +287,7 @@ class Promotion(AuditFieldsModel):
     store = models.ForeignKey(Entity, related_name='promotion_store', on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        ordering = ['-date_debut']
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.name

@@ -115,6 +115,8 @@ insert into stocks_product (id, "identity", name, description, slug, qrcode,pric
 insert into stocks_product (id, "identity", name, description, slug, qrcode,price, salePrice,initialStock,minStock,inStock,outStock,alert_threshold ,entrepot_address,disponibility,category_id,unity_id,created_at,updated_at,status)values (10, '010', 'Comme une Évidence – Yves Rocher', 'Comme une Évidence – Yves Rocher', '010', '', 10000, 15000, 50, 0,0,0,0,'','en_stock',1, 1, '2025-01-15 19:30:31.566188+00','2025-01-15 19:30:31.566188+00','ENABLE');
 update stocks_product set store_id=3 ;
 
+-- BRAND
+insert into stocks_brands (id, status, name, logo, slug, store_id) values (1, 'ENABLE', 'Brand A', 'brand_a_logo.png', 'brand-a', 3);
 
 
 -- ADDRESS

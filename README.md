@@ -5,6 +5,198 @@
 ### models
 
 ````
+import uuid
+import logging
+from datetime import datetime
+from django.db import transaction
+from django.core.exceptions import ValidationError
+from django.conf import settings
+from .models import Order, OrderItem, OrderStatus
+from cart.models import Cart, CartItem
+from payments.services import PaymentService
+from notifications.services import NotificationService
+
+logger = logging.getLogger(__name__)
+
+class OrderService:
+    """Service de gestion des commandes - Logique métier pure"""
+    
+    @classmethod
+    @transaction.atomic
+    def create_order_from_cart(cls, user, shipping_address, billing_address=None):
+        """
+        Crée une commande à partir du panier utilisateur
+        Logique métier complexe avec validation
+        """
+        logger.info(f"Création de commande pour l'utilisateur {user.id}")
+        
+        # Récupération et validation du panier
+        cart = cls._get_and_validate_cart(user)
+        
+        # Validation des adresses
+        cls._validate_address(shipping_address, 'shipping')
+        if billing_address:
+            cls._validate_address(billing_address, 'billing')
+        
+        # Génération du numéro de commande unique
+        order_number = cls._generate_order_number()
+        
+        # Calcul du total avec validation des stocks
+        total_amount, order_items_data = cls._calculate_order_total(cart)
+        
+        # Création de la commande
+        order = Order.objects.create(
+            user=user,
+            order_number=order_number,
+            total_amount=total_amount,
+            shipping_address=shipping_address,
+            billing_address=billing_address or shipping_address,
+            status=OrderStatus.PENDING
+        )
+        
+        # Création des articles de commande
+        cls._create_order_items(order, order_items_data)
+        
+        # Mise à jour des stocks
+        cls._update_product_stock(order_items_data)
+        
+        # Vider le panier
+        cart.items.all().delete()
+        
+        logger.info(f"Commande {order_number} créée avec succès")
+        return order
+    
+    @classmethod
+    def _get_and_validate_cart(cls, user):
+        """Récupère et valide le panier"""
+        try:
+            cart = Cart.objects.get(user=user)
+            if cart.total_items == 0:
+                raise ValidationError("Le panier est vide")
+            return cart
+        except Cart.DoesNotExist:
+            raise ValidationError("Panier non trouvé")
+    
+    @classmethod
+    def _validate_address(cls, address, address_type):
+        """Validation des données d'adresse"""
+        required_fields = ['first_name', 'last_name', 'street', 'city', 'postal_code', 'country']
+        
+        for field in required_fields:
+            if field not in address or not address[field]:
+                raise ValidationError(
+                    f"Le champ {field} est requis dans l'adresse de {address_type}"
+                )
+        
+        # Validation spécifique du code postal
+        if not cls._validate_postal_code(address['postal_code'], address['country']):
+            raise ValidationError("Code postal invalide pour le pays sélectionné")
+    
+    @classmethod
+    def _validate_postal_code(cls, postal_code, country):
+        """Validation du code postal selon le pays"""
+        # Implémentation simplifiée - à étendre selon les besoins
+        validators = {
+            'FR': lambda pc: len(pc) == 5 and pc.isdigit(),
+            'BE': lambda pc: len(pc) == 4 and pc.isdigit(),
+            # Ajouter d'autres pays...
+        }
+        
+        validator = validators.get(country, lambda pc: True)
+        return validator(postal_code)
+    
+    @classmethod
+    def _generate_order_number(cls):
+        """Génère un numéro de commande unique et significatif"""
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        unique_id = str(uuid.uuid4())[:8].upper()
+        return f"CMD-{timestamp}-{unique_id}"
+    
+    @classmethod
+    def _calculate_order_total(cls, cart):
+        """Calcule le total et valide la disponibilité des produits"""
+        total = 0
+        order_items_data = []
+        
+        for cart_item in cart.items.select_related('product').all():
+            product = cart_item.product
+            
+            # Validation du stock
+            if product.stock < cart_item.quantity:
+                raise ValidationError(
+                    f"Stock insuffisant pour {product.name}. "
+                    f"Disponible: {product.stock}, Demandé: {cart_item.quantity}"
+                )
+            
+            # Calcul du prix (pourrait inclure des promotions, etc.)
+            item_total = product.price * cart_item.quantity
+            total += item_total
+            
+            order_items_data.append({
+                'product': product,
+                'quantity': cart_item.quantity,
+                'price': product.price,
+                'total_price': item_total
+            })
+        
+        return total, order_items_data
+    
+    @classmethod
+    def _create_order_items(cls, order, order_items_data):
+        """Crée les articles de commande"""
+        for item_data in order_items_data:
+            OrderItem.objects.create(
+                order=order,
+                product=item_data['product'],
+                quantity=item_data['quantity'],
+                price=item_data['price']
+            )
+    
+    @classmethod
+    def _update_product_stock(cls, order_items_data):
+        """Met à jour le stock des produits"""
+        for item_data in order_items_data:
+            product = item_data['product']
+            product.stock -= item_data['quantity']
+            product.save()
+    
+    @classmethod
+    @transaction.atomic
+    def cancel_order(cls, order, reason=None):
+        """Annule une commande et restaure les stocks"""
+        if order.status not in [OrderStatus.PENDING, OrderStatus.CONFIRMED]:
+            raise ValidationError("Impossible d'annuler cette commande")
+        
+        # Restauration des stocks
+        for order_item in order.items.select_related('product').all():
+            product = order_item.product
+            product.stock += order_item.quantity
+            product.save()
+        
+        # Mise à jour du statut
+        order.status = OrderStatus.CANCELLED
+        order.cancellation_reason = reason
+        order.save()
+        
+        logger.info(f"Commande {order.order_number} annulée")
+        return order
+    
+    @classmethod
+    def get_order_summary(cls, order):
+        """Retourne un résumé de commande pour les APIs"""
+        return {
+            'order_number': order.order_number,
+            'status': order.status,
+            'total_amount': order.total_amount,
+            'item_count': order.items.count(),
+            'created_at': order.created_at,
+            'can_be_cancelled': order.status in [OrderStatus.PENDING, OrderStatus.CONFIRMED]
+        }
+
+
+````
+
+````
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator

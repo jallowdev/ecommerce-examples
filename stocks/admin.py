@@ -1,14 +1,15 @@
+from django import forms
 from django.contrib import admin
 from import_export import resources
-from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportModelAdmin, ExportActionMixin
 
-from stocks.models import Product, Category, Unity
+from stocks.models import Product, Category, Unity, StockImage
 
 
 class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'category', 'unity', 'price', 'salePrice', 'initialStock')
+        fields = ('id', 'identity','name', 'description', 'category', 'unity', 'price', 'salePrice', 'initialStock','default_image')
         import_id_fields = ('id',)
         skip_unchanged = True
 
@@ -16,7 +17,7 @@ class ProductResource(resources.ModelResource):
 class CategoryResource(resources.ModelResource):
     class Meta:
         model = Category
-        fields = ('id', 'name')
+        fields = ('id', 'name','parent')
         import_id_fields = ('id',)
         skip_unchanged = True
 
@@ -29,17 +30,64 @@ class UnityResource(resources.ModelResource):
         skip_unchanged = True
 
 
+class ProductAdminForm(forms.ModelForm):
+    banner = forms.FileField(required=False, label='Image du banniere')
+    image_gm = forms.FileField(required=False, label='Image gm du produit')
+    image_pm = forms.FileField(required=False, label='Image pm du produit')
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+
 @admin.register(Product)
-class ProductAdmin(ImportExportModelAdmin):
+class ProductAdmin(ImportExportModelAdmin, ExportActionMixin,admin.ModelAdmin):
     resource_class = ProductResource
 
     list_display = ('id', 'identity', 'name', 'description', 'category__name', 'unity__name', 'price', 'salePrice',
                     'initialStock', 'disponibility', 'status')
     list_filter = ('name', 'category__name')
+    #search_fields = ('name',)
+
+    form = ProductAdminForm
+
+    def save_model(self, request, obj, form, change):
+        # Récupère le fichier uploadé depuis le formulaire
+        banner = form.cleaned_data.get('banner')
+        banner_url = ''
+        image_gm = form.cleaned_data.get('image_gm')
+        image_gm_url = ''
+        image_pm = form.cleaned_data.get('image_pm')
+        image_pm_url = ''
+
+        if banner:
+            from core.commons.firebase_service import save_file
+            path_firebase = 'cosmos/products/'
+            url = save_file(path_firebase, banner)
+            banner_url = url
+
+        if image_gm:
+            from core.commons.firebase_service import save_file
+            path_firebase = 'cosmos/products/'
+            url = save_file(path_firebase, image_gm)
+            image_gm_url = url
+
+        if image_pm:
+            from core.commons.firebase_service import save_file
+            path_firebase = 'cosmos/products/'
+            url = save_file(path_firebase, image_pm)
+            image_pm_url = url
+        img=StockImage.objects.create(banner=banner_url,image_gm=image_gm_url,image_pm=image_pm_url)
+
+
+
+        super().save_model(request, obj, form, change)
+
 
 
 @admin.register(Category)
-class CategoryAdmin(ImportExportModelAdmin):
+class CategoryAdmin(ImportExportModelAdmin, ExportActionMixin):
     resource_class = CategoryResource
 
     list_display = ('id', 'name', 'parent__name', 'status')

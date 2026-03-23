@@ -1,11 +1,10 @@
 {% load static %}
 {% load i18n %}
-
-<div class="block-floor-products block-floor-products-opt3 floor-products4">
+<div class="block-floor-products block-floor-products-opt3 floor-products2">
     <div class="container">
         <!-- title -->
         <div class="block-title ">
-            <span class="title">Maquillage</span>
+            <span class="title">MODES</span>
             <div class="links dropdown">
                 <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
@@ -13,16 +12,16 @@
                 </button>
                 <div class="dropdown-menu">
                     <ul>
-                        <li role="presentation" class="active"><a href="#floor4-1" role="tab"
-                                                                  data-toggle="tab">All </a></li>
-                        <li role="presentation"><a href="#floor4-2" role="tab" data-toggle="tab">FOR
-                            Women </a></li>
-                        <li role="presentation"><a href="#floor4-3" role="tab" data-toggle="tab"> FOR
-                            MEN </a></li>
-                        <li role="presentation"><a href="#floor4-4" role="tab" data-toggle="tab">FOR
-                            KIDS </a></li>
-                        <li role="presentation"><a href="#floor4-5" role="tab"
-                                                   data-toggle="tab">ACCESSORIES</a></li>
+                        <li role="presentation"><a href="#floor2-1" role="tab" data-toggle="tab">Tous </a>
+                        </li>
+                        <li role="presentation" class="active"><a href="#floor2-2" role="tab"
+                                                                  data-toggle="tab">FEMME </a></li>
+                        <li role="presentation"><a href="#floor2-3" role="tab" data-toggle="tab"> HOMME </a>
+                        </li>
+                        <li role="presentation"><a href="#floor2-4" role="tab" data-toggle="tab"> ENFANT </a>
+                        </li>
+                        <li role="presentation"><a href="#floor2-5" role="tab" data-toggle="tab"> ACCESSOIRES
+                            </a></li>
 
                     </ul>
                 </div>
@@ -34,9 +33,9 @@
             <!-- banner -->
             <div class="col-banner">
                 <a href="" class="box-img">
-                    <img src="{% static 'assets/cosmos/images/media/index3/baner-floor4.jpg' %}"
+                    <img src="{% static 'assets/cosmos/images/media/index3/baner-floor2.jpg' %}"
                          alt="baner-floor">
-                    <div class="des"><span>up to 30% off</span></div>
+                    <div class="des"><span>TRENDING STYLE</span></div>
                 </a>
 
             </div>
@@ -45,56 +44,66 @@
             <div class="col-products tab-content">
 
                 <!-- tab 1 -->
-                <div class="tab-pane active fade" id="floor4-1" role="tabpanel">
+                <div class="tab-pane   fade " id="floor2-1" role="tabpanel">
                     <div class="owl-carousel"
                          data-nav="true"
                          data-dots="false"
                          data-margin="8"
                          data-responsive='{
-                                "0":{"items":1},
-                                "420":{"items":2},
-                                "600":{"items":3},
-                                "768":{"items":3},
-                                "992":{"items":3},
-                                "1200":{"items":4}
-                            }'>
-                        {% for  p in product_parfums_eaux.get_products %}
-                            <div class=" product-item  product-item-opt-1 ">
+                                    "0":{"items":1},
+                                    "420":{"items":2},
+                                    "600":{"items":3},
+                                    "768":{"items":3},
+                                    "992":{"items":3},
+                                    "1200":{"items":4}
+                                }'>
+
+                    </div>
+                </div>
+
+                <!-- tab 2-->
+
+                <div class="tab-pane active in  fade" id="floor2-2" role="tabpanel">
+                    <div class="owl-carousel"
+                         data-nav="true"
+                         data-dots="false"
+                         data-margin="8"
+                         data-responsive='{
+                                    "0":{"items":1},
+                                    "420":{"items":2},
+                                    "600":{"items":3},
+                                    "768":{"items":3},
+                                    "992":{"items":3},
+                                    "1200":{"items":4}
+                                }'>
+                        {% for p in products %}
+                            <div class="product-item  product-item-opt-1 ">
                                 <div class="product-item-info">
                                     <div class="product-item-photo">
-                                        {% if p.default_image %}
-                                            <a class="product-item-img" href=""><img alt="product name"
-                                                                                     src="{{ p.default_image }}"></a>
-                                        {% else %}
-                                            <a class="product-item-img" href=""><img alt="product name"
-                                                                                     src="{% static 'assets/cosmos/images/media/index3/floor1-1.jpg' %}"></a>
-                                        {% endif %}
-
+                                        <a class="product-item-img" href=""><img alt="product name"
+                                                                                 src="{{ p.default_image }}"></a>
                                         <div class="product-item-actions">
                                             <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                             <a class="btn btn-compare" href=""><span>compare</span></a>
                                             <a class="btn btn-quickview" href=""><span>quickview</span></a>
                                         </div>
-                                        <button type="button" class="btn btn-cart"><span>Ajouter au Panier</span>
+                                        <button type="button" class="btn btn-cart"><span>Add to Cart</span>
                                         </button>
 
                                     </div>
-                                    {% if p.is_promo %}
-                                        <span class="product-item-label label-sale-off">{{ p.promo_percent }}% <span>off</span></span>
-                                    {% endif %}
                                     <div class="product-item-detail">
-                                        <strong class="product-item-name"><a href="">{{ p.name }}</a></strong>
+                                        <strong class="product-item-name"><a href="">Maecenas consequat
+                                            mauris</a></strong>
                                         <div class="clearfix">
                                             <div class="product-item-price">
-                                                <span class="price">{{ p.price }} Fcfa</span>
-                                                <span class="old-price">{{ p.price }} Fcfa</span>
+                                                <span class="price">$45.00</span>
                                             </div>
                                             <div class="product-reviews-summary">
                                                 <div class="rating-summary">
                                                     <div title="80%" class="rating-result">
-                                                            <span style="width:80%">
-                                                                <span><span>80</span>% of <span>100</span></span>
-                                                            </span>
+                                                                <span style="width:80%">
+                                                                    <span><span>80</span>% of <span>100</span></span>
+                                                                </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -103,197 +112,12 @@
                                 </div>
                             </div>
                         {% endfor %}
-                    </div>
-                </div>
 
-                <!-- tab 2-->
-                <div class="tab-pane  fade" id="floor4-2" role="tabpanel">
-                    <div class="owl-carousel"
-                         data-nav="true"
-                         data-dots="false"
-                         data-margin="8"
-                         data-responsive='{
-                                    "0":{"items":1},
-                                    "420":{"items":2},
-                                    "600":{"items":3},
-                                    "768":{"items":3},
-                                    "992":{"items":3},
-                                    "1200":{"items":4}
-                                }'>
-                        <div class=" product-item  product-item-opt-1 ">
-                            <div class="product-item-info">
-                                <div class="product-item-photo">
-                                    <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-1.jpg' %}"></a>
-                                    <div class="product-item-actions">
-                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
-                                        <a class="btn btn-compare" href=""><span>compare</span></a>
-                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
-                                    </div>
-                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
-                                    </button>
-
-                                </div>
-
-                                <div class="product-item-detail">
-                                    <strong class="product-item-name"><a href="">Maecenas consequat
-                                        mauris</a></strong>
-                                    <div class="clearfix">
-                                        <div class="product-item-price">
-                                            <span class="price">$45.00</span>
-                                            <span class="old-price">$52.00</span>
-                                        </div>
-                                        <div class="product-reviews-summary">
-                                            <div class="rating-summary">
-                                                <div title="80%" class="rating-result">
-                                                                <span style="width:80%">
-                                                                    <span><span>80</span>% of <span>100</span></span>
-                                                                </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item  product-item-opt-1 ">
-                            <div class="product-item-info">
-                                <div class="product-item-photo">
-                                    <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-2.jpg' %}"></a>
-                                    <div class="product-item-actions">
-                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
-                                        <a class="btn btn-compare" href=""><span>compare</span></a>
-                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
-                                    </div>
-                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
-                                    </button>
-
-                                </div>
-                                <div class="product-item-detail">
-                                    <strong class="product-item-name"><a href="">Maecenas consequat
-                                        mauris</a></strong>
-                                    <div class="clearfix">
-                                        <div class="product-item-price">
-                                            <span class="price">$45.00</span>
-                                        </div>
-                                        <div class="product-reviews-summary">
-                                            <div class="rating-summary">
-                                                <div title="80%" class="rating-result">
-                                                                <span style="width:80%">
-                                                                    <span><span>80</span>% of <span>100</span></span>
-                                                                </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item  product-item-opt-1 ">
-                            <div class="product-item-info">
-                                <div class="product-item-photo">
-                                    <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-3.jpg' %}"></a>
-                                    <div class="product-item-actions">
-                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
-                                        <a class="btn btn-compare" href=""><span>compare</span></a>
-                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
-                                    </div>
-                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
-                                    </button>
-                                </div>
-                                <div class="product-item-detail">
-                                    <strong class="product-item-name"><a href="">Maecenas consequat
-                                        mauris</a></strong>
-                                    <div class="clearfix">
-                                        <div class="product-item-price">
-                                            <span class="price">$45.00</span>
-                                        </div>
-                                        <div class="product-reviews-summary">
-                                            <div class="rating-summary">
-                                                <div title="80%" class="rating-result">
-                                                                <span style="width:80%">
-                                                                    <span><span>80</span>% of <span>100</span></span>
-                                                                </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item  product-item-opt-1 ">
-                            <div class="product-item-info">
-                                <div class="product-item-photo">
-                                    <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
-                                    <div class="product-item-actions">
-                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
-                                        <a class="btn btn-compare" href=""><span>compare</span></a>
-                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
-                                    </div>
-                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
-                                    </button>
-                                </div>
-                                <div class="product-item-detail">
-                                    <strong class="product-item-name"><a href="">Maecenas consequat
-                                        mauris</a></strong>
-                                    <div class="clearfix">
-                                        <div class="product-item-price">
-                                            <span class="price">$45.00</span>
-                                        </div>
-                                        <div class="product-reviews-summary">
-                                            <div class="rating-summary">
-                                                <div title="80%" class="rating-result">
-                                                                <span style="width:80%">
-                                                                    <span><span>80</span>% of <span>100</span></span>
-                                                                </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item  product-item-opt-1 ">
-                            <div class="product-item-info">
-                                <div class="product-item-photo">
-                                    <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
-                                    <div class="product-item-actions">
-                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
-                                        <a class="btn btn-compare" href=""><span>compare</span></a>
-                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
-                                    </div>
-                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
-                                    </button>
-                                </div>
-                                <div class="product-item-detail">
-                                    <strong class="product-item-name"><a href="">Maecenas consequat
-                                        mauris</a></strong>
-                                    <div class="clearfix">
-                                        <div class="product-item-price">
-                                            <span class="price">$45.00</span>
-                                        </div>
-                                        <div class="product-reviews-summary">
-                                            <div class="rating-summary">
-                                                <div title="80%" class="rating-result">
-                                                                <span style="width:80%">
-                                                                    <span><span>80</span>% of <span>100</span></span>
-                                                                </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
                 <!-- tab 3 -->
-                <div class="tab-pane  fade" id="floor4-3" role="tabpanel">
+                <div class="tab-pane  fade" id="floor2-3" role="tabpanel">
                     <div class="owl-carousel"
                          data-nav="true"
                          data-dots="false"
@@ -310,7 +134,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-1.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-1.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -346,7 +170,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-2.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-2.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -380,7 +204,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-3.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-3.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -413,7 +237,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -446,7 +270,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -479,7 +303,7 @@
                 </div>
 
                 <!-- tab 4 -->
-                <div class="tab-pane  fade" id="floor4-4" role="tabpanel">
+                <div class="tab-pane  fade" id="floor2-4" role="tabpanel">
                     <div class="owl-carousel"
                          data-nav="true"
                          data-dots="false"
@@ -496,7 +320,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-1.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-1.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -532,7 +356,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-2.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-2.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -566,7 +390,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-3.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-3.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -599,7 +423,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -632,7 +456,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -665,7 +489,7 @@
                 </div>
 
                 <!-- tab 5 -->
-                <div class="tab-pane fade " id="floor4-5" role="tabpanel">
+                <div class="tab-pane fade " id="floor2-5" role="tabpanel">
                     <div class="owl-carousel"
                          data-nav="true"
                          data-dots="false"
@@ -682,7 +506,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-1.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-1.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -718,7 +542,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-2.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-2.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -752,7 +576,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-3.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-3.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -785,7 +609,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -818,7 +642,7 @@
                             <div class="product-item-info">
                                 <div class="product-item-photo">
                                     <a class="product-item-img" href=""><img alt="product name"
-                                                                             src="{% static 'assets/cosmos/images/media/index3/floor4-4.jpg' %}"></a>
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
                                     <div class="product-item-actions">
                                         <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
                                         <a class="btn btn-compare" href=""><span>compare</span></a>
@@ -850,9 +674,194 @@
                     </div>
                 </div>
 
+                <!-- tab 6 -->
+                <div class="tab-pane  fade " id="floor2-6" role="tabpanel">
+                    <div class="owl-carousel"
+                         data-nav="true"
+                         data-dots="false"
+                         data-margin="8"
+                         data-responsive='{
+                                    "0":{"items":1},
+                                    "420":{"items":2},
+                                    "600":{"items":3},
+                                    "768":{"items":3},
+                                    "992":{"items":3},
+                                    "1200":{"items":4}
+                                }'>
+                        <div class=" product-item  product-item-opt-1 ">
+                            <div class="product-item-info">
+                                <div class="product-item-photo">
+                                    <a class="product-item-img" href=""><img alt="product name"
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-1.jpg' %}"></a>
+                                    <div class="product-item-actions">
+                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
+                                        <a class="btn btn-compare" href=""><span>compare</span></a>
+                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
+                                    </div>
+                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
+                                    </button>
+
+                                </div>
+
+                                <div class="product-item-detail">
+                                    <strong class="product-item-name"><a href="">Maecenas consequat
+                                        mauris</a></strong>
+                                    <div class="clearfix">
+                                        <div class="product-item-price">
+                                            <span class="price">$45.00</span>
+                                            <span class="old-price">$52.00</span>
+                                        </div>
+                                        <div class="product-reviews-summary">
+                                            <div class="rating-summary">
+                                                <div title="80%" class="rating-result">
+                                                                <span style="width:80%">
+                                                                    <span><span>80</span>% of <span>100</span></span>
+                                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-item  product-item-opt-1 ">
+                            <div class="product-item-info">
+                                <div class="product-item-photo">
+                                    <a class="product-item-img" href=""><img alt="product name"
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-2.jpg' %}"></a>
+                                    <div class="product-item-actions">
+                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
+                                        <a class="btn btn-compare" href=""><span>compare</span></a>
+                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
+                                    </div>
+                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
+                                    </button>
+
+                                </div>
+                                <div class="product-item-detail">
+                                    <strong class="product-item-name"><a href="">Maecenas consequat
+                                        mauris</a></strong>
+                                    <div class="clearfix">
+                                        <div class="product-item-price">
+                                            <span class="price">$45.00</span>
+                                        </div>
+                                        <div class="product-reviews-summary">
+                                            <div class="rating-summary">
+                                                <div title="80%" class="rating-result">
+                                                                <span style="width:80%">
+                                                                    <span><span>80</span>% of <span>100</span></span>
+                                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-item  product-item-opt-1 ">
+                            <div class="product-item-info">
+                                <div class="product-item-photo">
+                                    <a class="product-item-img" href=""><img alt="product name"
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-3.jpg' %}"></a>
+                                    <div class="product-item-actions">
+                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
+                                        <a class="btn btn-compare" href=""><span>compare</span></a>
+                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
+                                    </div>
+                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
+                                    </button>
+                                </div>
+                                <div class="product-item-detail">
+                                    <strong class="product-item-name"><a href="">Maecenas consequat
+                                        mauris</a></strong>
+                                    <div class="clearfix">
+                                        <div class="product-item-price">
+                                            <span class="price">$45.00</span>
+                                        </div>
+                                        <div class="product-reviews-summary">
+                                            <div class="rating-summary">
+                                                <div title="80%" class="rating-result">
+                                                                <span style="width:80%">
+                                                                    <span><span>80</span>% of <span>100</span></span>
+                                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-item  product-item-opt-1 ">
+                            <div class="product-item-info">
+                                <div class="product-item-photo">
+                                    <a class="product-item-img" href=""><img alt="product name"
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
+                                    <div class="product-item-actions">
+                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
+                                        <a class="btn btn-compare" href=""><span>compare</span></a>
+                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
+                                    </div>
+                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
+                                    </button>
+                                </div>
+                                <div class="product-item-detail">
+                                    <strong class="product-item-name"><a href="">Maecenas consequat
+                                        mauris</a></strong>
+                                    <div class="clearfix">
+                                        <div class="product-item-price">
+                                            <span class="price">$45.00</span>
+                                        </div>
+                                        <div class="product-reviews-summary">
+                                            <div class="rating-summary">
+                                                <div title="80%" class="rating-result">
+                                                                <span style="width:80%">
+                                                                    <span><span>80</span>% of <span>100</span></span>
+                                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-item  product-item-opt-1 ">
+                            <div class="product-item-info">
+                                <div class="product-item-photo">
+                                    <a class="product-item-img" href=""><img alt="product name"
+                                                                             src="{% static 'assets/cosmos/images/media/index3/floor2-4.jpg' %}"></a>
+                                    <div class="product-item-actions">
+                                        <a class="btn btn-wishlist" href=""><span>wishlist</span></a>
+                                        <a class="btn btn-compare" href=""><span>compare</span></a>
+                                        <a class="btn btn-quickview" href=""><span>quickview</span></a>
+                                    </div>
+                                    <button type="button" class="btn btn-cart"><span>Add to Cart</span>
+                                    </button>
+                                </div>
+                                <div class="product-item-detail">
+                                    <strong class="product-item-name"><a href="">Maecenas consequat
+                                        mauris</a></strong>
+                                    <div class="clearfix">
+                                        <div class="product-item-price">
+                                            <span class="price">$45.00</span>
+                                        </div>
+                                        <div class="product-reviews-summary">
+                                            <div class="rating-summary">
+                                                <div title="80%" class="rating-result">
+                                                                <span style="width:80%">
+                                                                    <span><span>80</span>% of <span>100</span></span>
+                                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </div>
-</div><!-- block -floor -products / floor 4-->
+</div>

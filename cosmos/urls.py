@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.urls import path, include
 
-from cosmos.views import index_cosmos
+from cosmos.views import index_cosmos, category_list
 
 
 def checkout_cosmos(request):
@@ -21,6 +21,7 @@ def cart_cosmos(request):
 
 urlpatterns = [
     path('', index_cosmos, name='index_cosmos'),
+    path('category/<int:pk>/', category_list, name='category_list'),
     path('checkout/', checkout_cosmos, name='checkout_cosmos'),
     path('users/', include('users.urls')),
     path('stocks/', include('stocks.urls')),
